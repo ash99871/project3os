@@ -42,3 +42,17 @@ Primero verifica que la direccion inicial este en dentro de 4096 bytes, que no m
 
 **walk()** mira la tabla de páginas e ignora las paginas que no existen en memoria física. 
 Luego por cada página se mira el bit PTE_A (el 6), luego lo limpia según la situacion y devuelve la máscara al usuario con copyout().
+
+## Preguntas
+
+## ¿Por qué la página de guarda no tiene PTE_U? ¿Qué pasa si un programa desborda la pila?  
+porque la pila crece hacia direcciones menores, y la pagina de guarda esta justo debajo de ella. exec() la deja con PTE_U apagado (con uvmclear()). y asi, cualquier acceso desde modo usuario a esa pagina produce una excepcion de página, porque el hardware exige PTE_U para accesos de usuario.
+
+## Ademas de getpid(), ¿qué otras llamadas se podrían acelerar con la pagina compartida y cuales no?
+uptime(): en principio se podria acelerar en caso de que el kernel publica el contador ticks en una pagina de solo lectura y la actualiza en cada interrupción de reloj. Habria que mapear una pagina comun a todos los procesos, y el valor seria igual de exacto como la ultima interrupcion de reloj. Es informacion no sensible, asi que compartirla no filtra nada. En cambio no se pueden acelerar las que cambian estado del kernel, requieren privilegio o pueden bloquear al proceso como por ejemplo fork, exit, wait, kill, exec, pause, pipe etc......
+
+## ¿Que riesgo habria si USYSCALL se mapeara con PTE_W?
+Uno de los mayores riesgos es que procesos podrian modificar el contenido de una pagina que el kernel considera suya. En esta implementación el impacto directo es pequeño, porque la página es privada de cada proceso y solo guarda el pid.
+
+## ¿Por que pgaccess() reporta 0 para una pagina de sbrklazy() no tocada, y por qué no debe asignarle memoria?
+porque la funcion sbrklazy() solo aumenta p->sz. No reserva memoria fisica ni crea PTEs. Mientras el proceso no toque la página, no existe una PTE valida y el hardware nunca pudo encender PTE_A, porque PTE_A solo lo enciende al acceder a una página mapeada. Por tanto, "no accedida" es la respuesta correcta: 0.
