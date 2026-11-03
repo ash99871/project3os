@@ -430,8 +430,8 @@ copyinstr(pagetable_t pagetable, uint64 psz, char *dst, uint64 srcva,
  
     char *p = (char *)(pa0 + (srcva - va0));
     while (n > 0) {
-      if (*p == ' ') {
-        *dst = ' ';
+      if (*p == '\0') {
+        *dst = '\0';
         got_null = 1;
         break;
       } else {
@@ -508,7 +508,7 @@ vmprint_rec(pagetable_t pagetable, int level, uint64 va)
     printk("..");
     for (int j = 1; j < depth; j++)
       printk(" ..");
-    printk("%p: pte %p pa %p\n", sub, pte, PTE2PA(pte));
+    printk("%p: pte %p pa %p\n", (void *)sub, (void *)pte, (void *)PTE2PA(pte));
  
     // Si no tiene R/W/X apunta a otra tabla: recursar.
     if ((pte & (PTE_R | PTE_W | PTE_X)) == 0)

@@ -4,15 +4,6 @@
 #include "kernel/riscv.h"
 #include "kernel/vm.h"
 #include "user/user.h"
-#include "kernel/memlayout.h"
-//archivo modificado   
-int
-ugetpid(void)
-{
-  struct usyscall *u = (struct usyscall *)USYSCALL;
-  return u->pid;
-}
-
 
 //
 // wrapper so that it's OK if main() does not call exit().
@@ -168,4 +159,11 @@ char *
 sbrklazy(int n)
 {
   return sys_sbrk(n, SBRK_LAZY);
+}
+
+int
+ugetpid(void)
+{
+  struct usyscall *u = (struct syscall *)USYSCALL;
+  return u->pid;
 }

@@ -133,7 +133,7 @@ sys_sysinfo(void)
   info.nproc = count_runnable_procs();
  
   //Pasar la estructura al espacio de dirección del proceso de usuario
-  if (copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
+  if (copyout(p->pagetable, p->sz, addr, (char *)&info, sizeof(info)) < 0)
     return -1;
  
   return 0;

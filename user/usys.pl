@@ -43,4 +43,5 @@ entry("sbrk");
 entry("pause");
 entry("uptime");
 entry("sync");
-entry("sysinfo");
+entry("vmprint");
+entry("pgaccess");
