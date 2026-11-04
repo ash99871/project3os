@@ -9,6 +9,8 @@ Se expandio el kernel de xv6 con tres mecanismos que dependen de la tabla de pá
 # Parte A
 en la parte a se creo una pagina compartida USYSCALL de solo lectura y ugetpid() sin llamada al sistema. Los archivo principales fueron memlayout.h, proc.h proc.c, ulib.c y sysproc.c
 
+**USYSCALL**: direccion virtual donde el kernel mapea, en cada proceso, una pagina especial de solo lectura. Es TRAPFRAME - PGSIZE, la pagina justo debajo del trapframe, en la zona alta del espacio de direcciones. Es una constante de memlayout.h, no una función.
+
 **memlayout.h**: USYSCALL se define como TRAPFRAME - PGSIZE. La estructura struct usyscall { int pid; }; va dentro de #ifndef __ASSEMBLER__ ... #endif, porque este encabezado tambien lo incluye el codigo en ensamblador.
 
 **allocproc()**: reserva una pagina física con kalloc(), la llena con el pid del proceso y guarda su direccion en un campo nuevo de struct proc, y si la reserva falla, se liberan los recursos ya obtenidos y devuelve un error.
@@ -45,6 +47,8 @@ Luego por cada página se mira el bit PTE_A (el 6), luego lo limpia según la si
 
 ## Preguntas
 
+
+
 ## ¿Por qué la página de guarda no tiene PTE_U? ¿Qué pasa si un programa desborda la pila?  
 porque la pila crece hacia direcciones menores, y la pagina de guarda esta justo debajo de ella. exec() la deja con PTE_U apagado (con uvmclear()). y asi, cualquier acceso desde modo usuario a esa pagina produce una excepcion de página, porque el hardware exige PTE_U para accesos de usuario.
 
@@ -55,4 +59,20 @@ uptime(): en principio se podria acelerar en caso de que el kernel publica el co
 Uno de los mayores riesgos es que procesos podrian modificar el contenido de una pagina que el kernel considera suya. En esta implementación el impacto directo es pequeño, porque la página es privada de cada proceso y solo guarda el pid.
 
 ## ¿Por que pgaccess() reporta 0 para una pagina de sbrklazy() no tocada, y por qué no debe asignarle memoria?
+sbrklazy() solo aumenta p->sz. No reserva memoria física ni crea PTEs. Mientras el proceso no toque la página, no existe una PTE válida y el hardware nunca pudo encender PTE_A, porque PTE_A solo lo enciende al acceder a una página mapeada. Por tanto, "no accedida" es la respuesta correcta: 0.
+
+Y no se debe asignar porque alteraria lo que se observa, podria forzar procesos a consumir mas memoria de la que deberian y porque una memoria no deberia de usar memoria en procesos que no la usen, y una consulta no es un uso
+
+
+
+
+
+
+
+
+
+
+## Declaracion de uso con IA
+Comandos en debian y gitbash, revision para encontrar errores
+
 porque la funcion sbrklazy() solo aumenta p->sz. No reserva memoria fisica ni crea PTEs. Mientras el proceso no toque la página, no existe una PTE valida y el hardware nunca pudo encender PTE_A, porque PTE_A solo lo enciende al acceder a una página mapeada. Por tanto, "no accedida" es la respuesta correcta: 0.
