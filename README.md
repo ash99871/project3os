@@ -66,13 +66,11 @@ Y no se debe asignar porque alteraria lo que se observa, podria forzar procesos 
 
 
 
-
-
-
+## Resumen de los tests
+Las tres pruebas fueron exitosas.
 
 
 
 ## Declaracion de uso con IA
 Comandos en debian y gitbash, revision para encontrar errores
 
-porque la funcion sbrklazy() solo aumenta p->sz. No reserva memoria fisica ni crea PTEs. Mientras el proceso no toque la página, no existe una PTE valida y el hardware nunca pudo encender PTE_A, porque PTE_A solo lo enciende al acceder a una página mapeada. Por tanto, "no accedida" es la respuesta correcta: 0.
