@@ -112,6 +112,15 @@ sys_uptime(void)
   return xticks;
 }
  //archivo modificado
+ uint64
+sys_trace(void)
+{
+  int mask;
+  argint(0, &mask);
+  myproc()->tmask = mask;
+  return 0;
+}
+
 uint64
 sys_sysinfo(void)
 {

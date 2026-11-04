@@ -25,8 +25,12 @@ char *sys_sbrk(int, int);
 int pause(int);
 int uptime(void);
 int sync(void);
+struct sysinfo;
+int trace(int);
+int sysinfo(struct sysinfo *);
 int vmprint(void);
 int pgaccess(void*, int, uint64*);
+int ugetpid(void);
 
 // ulib.c
 int stat(const char *, struct stat *);

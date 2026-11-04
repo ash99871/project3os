@@ -110,7 +110,6 @@ static struct proc *
 allocproc(void)
 {
   struct proc *p;
- 
   for (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
     if (p->state == UNUSED) {
@@ -124,6 +123,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  p->tmask = 0;
  
   // Allocate a trapframe page.
   if ((p->trapframe = (struct trapframe *)kalloc()) == 0) {
@@ -309,8 +309,9 @@ kfork(void)
   np->cwd = idup(p->cwd);
  
   safestrcpy(np->name, p->name, sizeof(p->name));
- 
+  np->tmask = p->tmask;
   pid = np->pid;
+
  
   release(&np->lock);
  
@@ -623,7 +624,10 @@ int
 kkill(int pid)
 {
   struct proc *p;
- 
+  
+  if (pid == 0)
+    return -1;
+
   for (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
     if (p->pid == pid) {
@@ -719,6 +723,20 @@ procdump(void)
     printk("%d %s %s", p->pid, state, p->name);
     printk("\n");
   }
+}
+
+uint64
+get_nproc(void)
+{
+  struct proc *p;
+  uint64 count = 0;
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->state != UNUSED)
+      count++;
+    release(&p->lock);
+  }
+  return count;
 }
  
 uint64

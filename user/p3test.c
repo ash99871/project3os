@@ -35,7 +35,8 @@ main(void)
 
   // Accedemos a la página 0 (lectura) y a la página 2 (escritura).
   // La página 1 queda intacta (probando lazy allocation y ceros).
-  int dummy = buf[10];           // Toca página 0
+  volatile int dummy = buf[10];  // Toca página 0
+  (void)dummy;
   buf[2 * 4096 + 10] = 1;        // Toca página 2
 
   // Primer llamado: Esperamos bit 0 y bit 2 encendidos (101 en binario -> 5)
