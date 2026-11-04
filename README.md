@@ -17,7 +17,7 @@ en la parte a se creo una pagina compartida USYSCALL de solo lectura y ugetpid()
 
 **proc_pagetable()**: mapea la pagina en USYSCALL con PTE_R | PTE_U. El proceso en el sistema puede leerla, pero no escribirla asi que  si el mapeo falla, se deshacen los mapeos anteriores (trampolin y trapframe) antes de regresar.
 
-**ugetpid() en user/ulib.c**: lee ((struct usyscall *)USYSCALL)->pid, sin ejecutar ecall.
+**ugetpid() en user/ulib.c**: lee ((struct usyscall *)USYSCALL)->pid, sin ejecutar ecall, devuelve el pid leyendo USYSCALL directamente, sin llamada al sistema. Por eso es más rapida que getpid().
 
 **freeproc() y proc_freepagetable()**: desmapean USYSCALL con uvmunmap() y la pagina fisica del programa se libera con kfree() para no dejar fugas.
 
