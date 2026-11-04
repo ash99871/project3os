@@ -1,6 +1,6 @@
 ## Proyecto 3 sistemas operativos: tablas de pagina en accion
 
-**integrantes**: Ashley sofia robayo y Samuel Quintero Quintero
+**integrantes**: Ashly sofia robayo y Samuel Quintero Quintero
 
 ## objetivo
 
