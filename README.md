@@ -40,7 +40,7 @@ Se creo vmprint() el cual imprime una tabla de paginas en sus tres niveles. Se u
 **defs.h**: funciona como un indice de prototipos de todo el kernel, osea que declara las funciones de cada modulo (vm.c, proc.c, kalloc.c...) y las estructuras que se usan sin definirlas. Existe para que un .c pueda llamar funciones definidas en otro; por eso aquí solo se declara, no se implementa.
 
 # Parte c
-Primero verifica que la direccion inicial este en dentro de 4096 bytes, que no mire más de 64 pags, y que no se exceda la memoria total del proceso.
+Primero verifica que la direccion inicial este en dentro de 4096 bytes, que no mire más de 32 pags, y que no se exceda la memoria total del proceso.
 
 **walk()** mira la tabla de páginas e ignora las paginas que no existen en memoria física. 
 Luego por cada página se mira el bit PTE_A (el 6), luego lo limpia según la situacion y devuelve la máscara al usuario con copyout().
