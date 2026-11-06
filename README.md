@@ -73,4 +73,3 @@ Las tres pruebas fueron exitosas.
 
 ## Declaracion de uso con IA
 Comandos en debian y gitbash, revision para encontrar errores
-
